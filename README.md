@@ -1,27 +1,27 @@
 # gromacsplotter
 
-GROMACS natively produces xvg output files for use with xmgrace.
-I don't like that too much, so this is a quick and incomplete way
-to plot those output files with matplotlib.
+Forked from ilyasku/gromacsplotter
 
-## Install
+## Usage
 
-Download or clone the files, change to the gromacsplotter's top level directory
-and type
-```
-$ python setup.py install
-```
-You might need root access for that, or you can use the `--user` option to install only
-for your account.
+### Check dependencies
 
-## Command Line Script
+```
+$ pip install -r requirements.txt
+```
+or
+```
+$ conda install -r requirements.txt
+```
 
-Since this is about quickly plotting the xvg output, a command line script is provided.
-After install, it should be in your PATH, so that you can use
+### Plot .xvg files
+
 ```
-$ gromacsplotter <name-of-xvg-file>
+$ python plot_xvg_data.py <DIR>/<XVG_FILE>
 ```
-to create a plot.
-There are currently no options or arguments implemented. It will plot all the columns
-found in the file against the first column, and will try to read the axis labels and
-title from the xvg file.
+
+The plot file will be saved in the same dir with .xvg file. 
+
+### Python version
+
+Python 3.7.6

@@ -1,6 +1,7 @@
+import os, sys
 import numpy as np
+import matplotlib.pyplot as plt
 from matplotlib.axes._axes import Axes
-from .exceptions.unsupported_data_format_exception import UnsupportedDataFormatException
 
 
 def read_xvg(file_name):
@@ -14,7 +15,8 @@ def read_xvg(file_name):
         if line.startswith("@TYPE"):
             _type = line.split()[-1]
             if _type != "xy":
-                raise UnsupportedDataFormatException()
+                print("Unsupport data format")
+                sys.exit(1)
         if line.startswith("#"):
             continue
         if line.startswith("@ s0 "):
@@ -84,3 +86,39 @@ def _extract_value_from_line(key: str, line: str):
     value = line.split(key)[-1]
     value = value.strip().replace("\"", "")
     return value
+
+
+def plot_xvg_data(ax, data, plot_kwargs, plot_operations):
+
+    names = data.dtype.names
+
+    if names:
+        for i in range(1, len(names)):
+            ax.plot(data[names[0]], data[names[i]], label=names[i], **plot_kwargs)
+    else:
+        for i in range(1, data.shape[0]):
+            ax.plot(data[0, :], data[i, :])
+
+    for function, arguments in plot_operations.values():
+        function(ax, *arguments)
+
+
+def main():
+    if len(sys.argv) != 2:
+        msg = "Requires exactly one argument: an xvg file name!"
+        raise RuntimeError(msg)
+    xvg_file_name = sys.argv[1]
+
+    if not os.path.isfile(xvg_file_name):
+        msg = "file \"%s\" not found!" % xvg_file_name
+        raise IOError(msg)
+
+    f, ax = plt.subplots(1, 1)
+
+    data, kwargs, operations = read_xvg(xvg_file_name)
+
+    plot_xvg_data(ax, data, kwargs, operations)
+    ax.legend()
+    plt.savefig(sys.argv[1][:-4] + ".png", dpi=400)
+
+main()

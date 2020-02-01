@@ -11,7 +11,7 @@ $ pip install -r requirements.txt
 ```
 or
 ```
-$ conda install -r requirements.txt
+$ conda install requirements.txt
 ```
 
 ### Plot .xvg files
